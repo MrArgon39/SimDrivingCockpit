@@ -1,5 +1,6 @@
 #include "Adafruit_TinyUSB.h"
 
+// d = D-Pad, m = Media, c = Cruise, o = Other assorted buttons
 byte dUP = 2;
 byte dDOWN = 3;
 byte dLEFT = 4;
@@ -10,6 +11,11 @@ byte mVolDOWN = 8;
 byte mSkipFWD = 9;
 byte mSkipBACK = 10;
 byte mPausePlay = 11;
+byte cSet = 12;
+byte cMinus = 13;
+byte cPlus = 14;
+byte cRes = 15;
+byte cCan = 16; // Only used as cancel in BeamNG
 
 enum
 {
@@ -39,6 +45,11 @@ void setup()
   pinMode(mSkipFWD, INPUT_PULLUP);
   pinMode(mSkipBACK, INPUT_PULLUP);
   pinMode(mPausePlay, INPUT_PULLUP);
+  pinMode(cSet, INPUT_PULLUP);
+  pinMode(cMinus, INPUT_PULLUP);
+  pinMode(cPlus, INPUT_PULLUP);
+  pinMode(cRes, INPUT_PULLUP);
+  pinMode(cCan, INPUT_PULLUP);
   pinMode(LED_BUILTIN, OUTPUT);
 
   usb_hid.setStringDescriptor("PicoWheel");
@@ -75,6 +86,11 @@ void loop()
   bool dLEFT_pressed = (digitalRead(dLEFT) == false);
   bool dRIGHT_pressed = (digitalRead(dRIGHT) == false);
   bool dOK_pressed = (digitalRead(dOK) == false);
+  bool cSet_pressed = (digitalRead(cSet) == false);
+  bool cMinus_pressed = (digitalRead(cMinus) == false);
+  bool cPlus_pressed = (digitalRead(cPlus) == false);
+  bool cRes_pressed = (digitalRead(cRes) == false);
+  bool cCan_pressed = (digitalRead(cCan) == false);
 
   gp.x = 0;
   gp.y = 0;
@@ -177,6 +193,56 @@ void loop()
       gp.buttons = 1;
       usb_hid.sendReport(RID_GAMEPAD, &gp, sizeof(gp));
       Serial.println("D-Pad OK Pressed");
+      delay(300);
+      gp.buttons = 0;
+      usb_hid.sendReport(RID_GAMEPAD, &gp, sizeof(gp));
+    }
+    if (cSet_pressed)
+    {
+      // Send Button 2
+      gp.buttons = 2;
+      usb_hid.sendReport(RID_GAMEPAD, &gp, sizeof(gp));
+      Serial.println("Cruise Set Pressed");
+      delay(300);
+      gp.buttons = 0;
+      usb_hid.sendReport(RID_GAMEPAD, &gp, sizeof(gp));
+    }
+    if (cPlus_pressed)
+    {
+      // Send Button 3
+      gp.buttons = 4;
+      usb_hid.sendReport(RID_GAMEPAD, &gp, sizeof(gp));
+      Serial.println("Cruise Set Pressed");
+      delay(300);
+      gp.buttons = 0;
+      usb_hid.sendReport(RID_GAMEPAD, &gp, sizeof(gp));
+    }
+    if (cMinus_pressed)
+    {
+      // Send Button 4
+      gp.buttons = 8;
+      usb_hid.sendReport(RID_GAMEPAD, &gp, sizeof(gp));
+      Serial.println("Cruise Set Pressed");
+      delay(300);
+      gp.buttons = 0;
+      usb_hid.sendReport(RID_GAMEPAD, &gp, sizeof(gp));
+    }
+    if (cCan_pressed)
+    {
+      // Send Button 5
+      gp.buttons = 16;
+      usb_hid.sendReport(RID_GAMEPAD, &gp, sizeof(gp));
+      Serial.println("Cruise Set Pressed");
+      delay(300);
+      gp.buttons = 0;
+      usb_hid.sendReport(RID_GAMEPAD, &gp, sizeof(gp));
+    }
+    if (cRes_pressed)
+    {
+      // Send Button 6
+      gp.buttons = 32;
+      usb_hid.sendReport(RID_GAMEPAD, &gp, sizeof(gp));
+      Serial.println("Cruise Set Pressed");
       delay(300);
       gp.buttons = 0;
       usb_hid.sendReport(RID_GAMEPAD, &gp, sizeof(gp));
