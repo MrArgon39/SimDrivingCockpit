@@ -39,7 +39,7 @@ void setup() {
   // wait until device mounted
   while ( !TinyUSBDevice.mounted() ) delay(1);
 
-  Serial.println("Adafruit TinyUSB HID Gamepad example");
+  Serial.println("PicoShift");
 }
 
 void loop() {

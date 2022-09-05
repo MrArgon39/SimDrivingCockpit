@@ -59,7 +59,7 @@ void setup()
   while (!TinyUSBDevice.mounted())
     delay(1);
 
-  Serial.println("Adafruit TinyUSB HID Composite example");
+  Serial.println("PicoWheel");
   gp.x = 0;
   gp.y = 0;
   gp.z = 0;
@@ -207,7 +207,7 @@ void loop()
       gp.buttons = 0;
       usb_hid.sendReport(RID_GAMEPAD, &gp, sizeof(gp));
     }
-    if (cPlus_pressed)
+    if (cMinus_pressed)
     {
       // Send Button 3
       gp.buttons = 4;
@@ -217,7 +217,7 @@ void loop()
       gp.buttons = 0;
       usb_hid.sendReport(RID_GAMEPAD, &gp, sizeof(gp));
     }
-    if (cMinus_pressed)
+    if (cPlus_pressed)
     {
       // Send Button 4
       gp.buttons = 8;
@@ -227,7 +227,7 @@ void loop()
       gp.buttons = 0;
       usb_hid.sendReport(RID_GAMEPAD, &gp, sizeof(gp));
     }
-    if (cCan_pressed)
+    if (cRes_pressed)
     {
       // Send Button 5
       gp.buttons = 16;
@@ -237,7 +237,7 @@ void loop()
       gp.buttons = 0;
       usb_hid.sendReport(RID_GAMEPAD, &gp, sizeof(gp));
     }
-    if (cRes_pressed)
+    if (cCan_pressed)
     {
       // Send Button 6
       gp.buttons = 32;
