@@ -12,9 +12,22 @@ float speed = 0;//1.5 speed = 1 frequency
 BeanMPX bean;
 uint32_t timer = 0;
 uint32_t current_millis = 0;
-uint8_t powerSteering[] =        {0x62, 0x21, 0x02}; //Power Steering Fault Clear
-uint8_t SRS[] =                  {0x62, 0x7A, 0x01}; //SRS clear
-uint8_t stabilityControl[] =     {0x62, 0x91, 0x40}; //ABS and TC clear
+uint8_t powerSteering[] =         {0x62, 0x21, 0x02}; //Power Steering Fault Clear
+uint8_t SRS[] =                   {0x62, 0x7A, 0x01}; //SRS clear
+uint8_t stabilityControl[] =      {0x62, 0x91, 0x40, 0x10, 0x10, 0x10, 0x10, 0x10, 0x10}; //ABS and TC clear D1 0x40 = Clear | D2 0x20 = Park Brake, 0x10 = Clear, 0x0f ABS On, 0x08 ABS Flash | D7 0x02 = Rapid Trac Flash, 0x04 = Slow Trac Flash, 0x0b = Trac Solid, 0x18 = Trac Off Light 
+uint8_t gear[] =                  {0x62, 0x40, 0x20}; //Default to Neutral  P,R,N,D (0x80, 0x40, 0x20, 0x10)
+uint8_t cruise[] =                {0x62, 0xc8, 0x02, 0x40}; //Cruise Off = 0x40, On = 0x10
+uint8_t lights[] =                {0x62, 0x7F, 0x04}; //Lights 0x10 = Low Beam, 0x08 = High Beam, 0x01 = Front Fog
+uint8_t outTemp[] =               {0x62, 0xCD, 0x28}; //0x08 = -40, 0x59 = 40
+uint8_t engTemp[]  =              {0x62, 0x2C, 0xA5}; //0x5A - 0xFF
+uint8_t sportMode[] =             {0x62, 0x9D, 0x80, 0x40, 0x08}; //D2 0x40=6,0x20=5,0x10=4,0x08=3,0x04=2,0x02=1 | D3 0x08 = 1, 0x10 = 2, 0x20 = 3, 0x30 = 4, 0x40 = 5, 0x50 = 6
+
+int sGear;
+int sCruise;
+//int sLights;
+int sEngTemp;
+int sOutTemp;
+int sHandbrake;
 int sendIndex = 1;
 
 //Custom Protocol Format within SimHub - 
@@ -63,7 +76,7 @@ class SHCustomProtocol {
       // EXAMPLE 1 - read the whole message and sent it back to simhub as debug message
       // Protocol formula can be set in simhub to anything, it will just echo it
       // -------------------------------------------------------
-      speed = FlowSerialReadStringUntil('\n').toFloat();
+     /* speed = FlowSerialReadStringUntil('\n').toFloat();
       
       //speedConv();
       if (speed <= 70){
@@ -78,7 +91,49 @@ class SHCustomProtocol {
     
       t=1000000/f;
       Timer1.initialize(t);
-      Timer1.pwm(11, 512); // This code will change, will use a 4017 with the default speedo tone.
+      Timer1.pwm(11, 512);*/
+      sGear = FlowSerialReadStringUntil(';').toInt();
+      sCruise = FlowSerialReadStringUntil(';').toInt();
+      int sLowBeam = FlowSerialReadStringUntil(';').toInt();
+      int sHighBeam = FlowSerialReadStringUntil(';').toInt();
+      int sFog = FlowSerialReadStringUntil(';').toInt();
+      sEngTemp = FlowSerialReadStringUntil(';').toInt();
+      sOutTemp = FlowSerialReadStringUntil(';').toInt();
+      sHandbrake = FlowSerialReadStringUntil('\n').toInt();
+      lights[2] = 0x04;
+      if (sGear == 0){
+        gear[2] = 0x20;
+      }
+      else if (sGear == -1){
+        gear[2] = 0x40;
+      }
+      else if (sGear >= 1){
+        gear[2] = 0x10;
+      }
+      if (sCruise == 1){
+        cruise[3] = 0x10;
+      }
+      else{
+        cruise[3] = 0x40;
+      }
+      if (sLowBeam == 1){
+        lights[2] = lights[2] + 0x10;
+      }
+      if (sHighBeam == 1){
+        lights[2] = lights[2] + 0x08;
+      }
+      if (sFog == 1){
+        lights[2] = lights[2] + 0x01;
+      }
+      //Eng temp interpret here.
+      outTemp[2] = sOutTemp + 48;
+      if (sHandbrake == 1){
+        stabilityControl[3] = 0x20;
+      }
+      else{
+        stabilityControl[3] = 0x10;
+      }
+      bean.sendMsg(lights, sizeof(lights));
       /*
         // -------------------------------------------------------
         // EXAMPLE 2 - reads speed and gear from the message
@@ -113,12 +168,34 @@ class SHCustomProtocol {
             break;
             case 3:
             bean.sendMsg(stabilityControl, sizeof(stabilityControl));
+            sendIndex++;
+            break;
+            case 4:
+            bean.sendMsg(gear, sizeof(gear));
+            sendIndex++;
+            break;
+            case 5:
+            bean.sendMsg(cruise, sizeof(cruise));
+            sendIndex++;
+            break;
+            case 6:
+            bean.sendMsg(lights, sizeof(lights));
+            sendIndex++;
+            break;
+            case 7:
+            bean.sendMsg(engTemp, sizeof(engTemp));
+            sendIndex++;
+            break;
+            case 8:
+            bean.sendMsg(outTemp, sizeof(outTemp));
             sendIndex = 1;
             break;
           }
       timer = current_millis;
     }    
   }
+    //Timer1.setPeriod(t);
+    //Timer1.pwm(11, 512);
     }
 
     // Called once between each byte read on arduino,
