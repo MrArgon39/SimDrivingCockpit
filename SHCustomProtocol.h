@@ -3,10 +3,20 @@
 
 #include <Arduino.h>
 #include <TimerOne.h>
+#include <BeanMPX.h>
 
 unsigned long t;
 float f = 0; // 10f = 15 speed
 float speed = 0;//1.5 speed = 1 frequency
+
+BeanMPX bean;
+uint32_t timer = 0;
+uint32_t current_millis = 0;
+
+uint8_t powerSteering[] =      {0x62, 0x21, 0x02}; //Power Steering Fault Clear
+uint8_t SRS[] =     {0x62, 0x7A, 0x01}; //SRS clear
+uint8_t stabilityControl[] =     {0x62, 0x91, 0x40}; //ABS and TC clear
+int sendIndex = 1;
 
 //Custom Protocol Format within SimHub - 
 
@@ -45,6 +55,8 @@ class SHCustomProtocol {
     void setup() {
       pinMode(11, OUTPUT);
       Timer1.initialize(t);
+      bean.ackMsg((const uint8_t[]) {0xFE}, 1);
+      bean.begin(46, 47);
     }
 
     // Called when new data is coming from computer
@@ -85,6 +97,28 @@ class SHCustomProtocol {
     // Called once per arduino loop, timing can't be predicted,
     // but it's called between each command sent to the arduino
     void loop() {
+      current_millis = millis();
+
+  
+      if (current_millis - timer > 50) {
+        if (!bean.isBusy()) {
+          switch (sendIndex){
+           case 1:
+            bean.sendMsg(powerSteering, sizeof(powerSteering));
+            sendIndex++;
+            break;
+            case 2:
+            bean.sendMsg(SRS, sizeof(SRS));
+            sendIndex++;
+            break;
+            case 3:
+            bean.sendMsg(stabilityControl, sizeof(stabilityControl));
+            sendIndex = 1;
+            break;
+          }
+      timer = current_millis;
+    }    
+  }
     }
 
     // Called once between each byte read on arduino,
