@@ -1,7 +1,7 @@
 #include <TimerOne.h>
 unsigned long t;
 float f=0;// 10f = 15 speed
-int speed = 20;//1.5 speed = 1 frequency
+float speed = 20;//1.5 speed = 1 frequency
 
 void setup(){
     pinMode(11, OUTPUT);
@@ -18,8 +18,8 @@ void loop() { //175hz = 260km/h
     speedConv();
     t=1000000/f;
     Serial.println(speed);
-    speed++;
-    delay(200);
+    speed = speed + 0.01;
+    
 }
 
 void speedConv(){
