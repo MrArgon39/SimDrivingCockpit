@@ -13,8 +13,8 @@ uint32_t start, stop;
 
 //  select, reset, shutdown, data, clock
 //  AD5204 pot(10, 255, 255, 8, 9);  // SW SPI
-AD8400 pot = AD8400(10, 255, 255,11,13 );     // HW SPI
-
+//AD8400 pot = AD8400(10, 255, 255,11,13 );     // HW SPI Uno
+AD8400 pot = AD8400(53, 255, 255,51,52 );     // HW SPI Mega
 
 void setup()
 {
@@ -39,7 +39,7 @@ void setup()
 
 void loop()
 {
-  pot.setValue(0, 2); //2 = full, 82 = empty
+  pot.setValue(0, 0); //2 = full, 82 = empty
   delay(1000);
 }
 

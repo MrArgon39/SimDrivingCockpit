@@ -2,7 +2,7 @@
     "configuration": "cpu=atmega2560",
     "board": "arduino:avr:mega",
     "port": "COM10",
-    "sketch": "Code\\IS250_Speed_Test\\IS250_Speed_Test.ino",
+    "sketch": "Code\\IS250_Fuel_Test\\IS250_Fuel_Test.ino",
     "output": "../ArduinoOutput",
     "programmer": "arduino:avrispmkii"
 }
