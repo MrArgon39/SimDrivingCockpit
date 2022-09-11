@@ -1,9 +1,10 @@
-#ifndef __SHCUSTOMPROTOCOL_H__
+ #ifndef __SHCUSTOMPROTOCOL_H__
 #define __SHCUSTOMPROTOCOL_H__
 
 #include <Arduino.h>
 #include <TimerOne.h>
 #include <BeanMPX.h>
+#include <AD520X.h>
 
 unsigned long t;
 float f = 0; // 10f = 15 speed
@@ -12,6 +13,8 @@ float speed = 0;//1.5 speed = 1 frequency
 BeanMPX bean;
 uint32_t timer = 0;
 uint32_t current_millis = 0;
+uint32_t timer2 = 0;
+uint32_t current_millis2 = 0;
 uint8_t powerSteering[] =         {0x62, 0x21, 0x02}; //Power Steering Fault Clear
 uint8_t SRS[] =                   {0x62, 0x7A, 0x01}; //SRS clear
 uint8_t stabilityControl[] =      {0x62, 0x91, 0x40, 0x10, 0x10, 0x10, 0x10, 0x10, 0x10}; //ABS and TC clear D1 0x40 = Clear | D2 0x20 = Park Brake, 0x10 = Clear, 0x0f ABS On, 0x08 ABS Flash | D7 0x02 = Rapid Trac Flash, 0x04 = Slow Trac Flash, 0x0b = Trac Solid, 0x18 = Trac Off Light 
@@ -22,13 +25,19 @@ uint8_t outTemp[] =               {0x62, 0xCD, 0x28}; //0x08 = -40, 0x59 = 40
 uint8_t engTemp[]  =              {0x62, 0x2C, 0xA5}; //0x5A - 0xFF
 uint8_t sportMode[] =             {0x62, 0x9D, 0x80, 0x40, 0x08}; //D2 0x40=6,0x20=5,0x10=4,0x08=3,0x04=2,0x02=1 | D3 0x08 = 1, 0x10 = 2, 0x20 = 3, 0x30 = 4, 0x40 = 5, 0x50 = 6
 
+int cruiseP = 0x40;
+int lightsP = 0x04;
+
 int sGear;
 int sCruise;
 //int sLights;
 int sEngTemp;
 int sOutTemp;
 int sHandbrake;
+int sFuel;
 int sendIndex = 1;
+
+AD8400 pot = AD8400(53, 255, 255,51,52 );
 
 //Custom Protocol Format within SimHub - 
 
@@ -69,6 +78,7 @@ class SHCustomProtocol {
       //Timer1.initialize(t);
       bean.ackMsg((const uint8_t[]) {0xFE}, 1);
       bean.begin(46, 47);
+      pot.begin(4);
     }
 
     // Called when new data is coming from computer
@@ -99,7 +109,8 @@ class SHCustomProtocol {
       int sFog = FlowSerialReadStringUntil(';').toInt();
       sEngTemp = FlowSerialReadStringUntil(';').toInt();
       sOutTemp = FlowSerialReadStringUntil(';').toInt();
-      sHandbrake = FlowSerialReadStringUntil('\n').toInt();
+      sHandbrake = FlowSerialReadStringUntil(';').toInt();
+      sFuel = FlowSerialReadStringUntil('\n').toInt();
       lights[2] = 0x04;
       if (sGear == 0){
         gear[2] = 0x20;
@@ -133,7 +144,25 @@ class SHCustomProtocol {
       else{
         stabilityControl[3] = 0x10;
       }
-      bean.sendMsg(lights, sizeof(lights));
+      if (cruiseP != cruise[3])
+      {
+        bean.sendMsg(cruise, sizeof(cruise));   
+        cruiseP = cruise[3];
+      }
+      if (lightsP != lights[2])
+      {
+        bean.sendMsg(lights, sizeof(lights));   
+        lightsP = lights[2];
+      }
+      current_millis2 = millis();
+      if (current_millis2 - timer2 > 500){
+         bean.sendMsg(lights, sizeof(lights));
+         bean.sendMsg(cruise, sizeof(cruise)); 
+      }
+     
+      
+      sFuel = map(sFuel, 0, 100, 82, 2);
+     
       /*
         // -------------------------------------------------------
         // EXAMPLE 2 - reads speed and gear from the message
@@ -155,7 +184,7 @@ class SHCustomProtocol {
       current_millis = millis();
 
   
-      if (current_millis - timer > 50) {
+      if (current_millis - timer > 30) {
         if (!bean.isBusy()) {
           switch (sendIndex){
            case 1:
@@ -165,6 +194,7 @@ class SHCustomProtocol {
             case 2:
             bean.sendMsg(SRS, sizeof(SRS));
             sendIndex++;
+            pot.setValue(0, sFuel);
             break;
             case 3:
             bean.sendMsg(stabilityControl, sizeof(stabilityControl));
@@ -174,22 +204,18 @@ class SHCustomProtocol {
             bean.sendMsg(gear, sizeof(gear));
             sendIndex++;
             break;
-            case 5:
+            /*case 5:
             bean.sendMsg(cruise, sizeof(cruise));
             sendIndex++;
-            break;
-            case 6:
-            bean.sendMsg(lights, sizeof(lights));
-            sendIndex++;
-            break;
-            case 7:
+            break;*/
+            case 5:
             bean.sendMsg(engTemp, sizeof(engTemp));
             sendIndex++;
             break;
-            case 8:
+            case 6:
             bean.sendMsg(outTemp, sizeof(outTemp));
             sendIndex = 1;
-            break;
+            break;      
           }
       timer = current_millis;
     }    
