@@ -1,8 +1,8 @@
 {
-    "configuration": "cpu=atmega2560",
-    "board": "arduino:avr:mega",
+    "configuration": "flash=2097152_0,freq=133,opt=Small,rtti=Disabled,stackprotect=Disabled,exceptions=Disabled,dbgport=Disabled,dbglvl=None,usbstack=tinyusb,ipstack=ipv4only",
+    "board": "rp2040:rp2040:rpipico",
     "port": "COM10",
-    "sketch": "Code\\IS250_Fuel_Test\\IS250_Fuel_Test.ino",
+    "sketch": "Code\\PicoPedal\\PicoPedal.ino",
     "output": "../ArduinoOutput",
     "programmer": "arduino:avrispmkii"
 }

@@ -28,11 +28,11 @@ void setup() {
   // Brake Potentiometer on pin 27
   pinMode(A1, INPUT);
   // Accelerator Potentiometer on pin 27
-  pinMode(20, INPUT_PULLUP);
+  pinMode(A2, INPUT);
 
-  //Uncomment once 3rd pico arrives
-  //usb_hid.setStringDescriptor("PicoPedal");
-  //USBDevice.setID( 0x2e8a, 0x000c ); // Sets the Product ID to be different to the default, so that windows respects the name given, and not the name of the first device plugged in.
+
+  usb_hid.setStringDescriptor("PicoPedal");
+  USBDevice.setID( 0x2e8a, 0x000c ); // Sets the Product ID to be different to the default, so that windows respects the name given, and not the name of the first device plugged in.
 
   usb_hid.begin();
 
