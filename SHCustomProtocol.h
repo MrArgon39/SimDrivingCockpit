@@ -104,6 +104,7 @@ class SHCustomProtocol {
       Timer1.pwm(11, 512);*/
       sGear = FlowSerialReadStringUntil(';').toInt();
       sCruise = FlowSerialReadStringUntil(';').toInt();
+      int sCruiseSpeed = FlowSerialReadStringUntil(';').toInt();
       int sLowBeam = FlowSerialReadStringUntil(';').toInt();
       int sHighBeam = FlowSerialReadStringUntil(';').toInt();
       int sFog = FlowSerialReadStringUntil(';').toInt();
@@ -144,24 +145,21 @@ class SHCustomProtocol {
       else{
         stabilityControl[3] = 0x10;
       }
+      /*
       if (cruiseP != cruise[3])
       {
         bean.sendMsg(cruise, sizeof(cruise));   
         cruiseP = cruise[3];
-      }
+      }*/
       if (lightsP != lights[2])
       {
         bean.sendMsg(lights, sizeof(lights));   
         lightsP = lights[2];
       }
-      current_millis2 = millis();
-      if (current_millis2 - timer2 > 500){
-         bean.sendMsg(lights, sizeof(lights));
-         bean.sendMsg(cruise, sizeof(cruise)); 
-      }
-     
-      
-      sFuel = map(sFuel, 0, 100, 82, 2);
+
+      sEngTemp = map(sEngTemp, 40, 140, 0x5a, 0xfe);
+      engTemp[2] = sEngTemp;
+      sFuel = map(sFuel, 0, 100, 82, 0);
      
       /*
         // -------------------------------------------------------
@@ -184,7 +182,7 @@ class SHCustomProtocol {
       current_millis = millis();
 
   
-      if (current_millis - timer > 30) {
+      if (current_millis - timer > 48) {
         if (!bean.isBusy()) {
           switch (sendIndex){
            case 1:
@@ -204,18 +202,19 @@ class SHCustomProtocol {
             bean.sendMsg(gear, sizeof(gear));
             sendIndex++;
             break;
-            /*case 5:
-            bean.sendMsg(cruise, sizeof(cruise));
-            sendIndex++;
-            break;*/
             case 5:
-            bean.sendMsg(engTemp, sizeof(engTemp));
+            bean.sendMsg(cruise, sizeof(cruise));
             sendIndex++;
             break;
             case 6:
+            bean.sendMsg(engTemp, sizeof(engTemp));
+            sendIndex++;
+            break;
+            case 7:
             bean.sendMsg(outTemp, sizeof(outTemp));
             sendIndex = 1;
-            break;      
+            //FlowSerialDebugPrintLn(millis());
+            break;
           }
       timer = current_millis;
     }    
