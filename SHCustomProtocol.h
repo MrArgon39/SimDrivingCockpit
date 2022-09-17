@@ -19,7 +19,7 @@ uint8_t powerSteering[] =         {0x62, 0x21, 0x02}; //Power Steering Fault Cle
 uint8_t SRS[] =                   {0x62, 0x7A, 0x01}; //SRS clear
 uint8_t stabilityControl[] =      {0x62, 0x91, 0x40, 0x10, 0x10, 0x10, 0x10, 0x10, 0x10}; //ABS and TC clear D1 0x40 = Clear | D2 0x20 = Park Brake, 0x10 = Clear, 0x0f ABS On, 0x08 ABS Flash | D7 0x02 = Rapid Trac Flash, 0x04 = Slow Trac Flash, 0x0b = Trac Solid, 0x18 = Trac Off Light 
 uint8_t gear[] =                  {0x62, 0x40, 0x20}; //Default to Neutral  P,R,N,D (0x80, 0x40, 0x20, 0x10)
-uint8_t cruise[] =                {0x62, 0xc8, 0x02, 0x40}; //Cruise Off = 0x40, On = 0x10
+uint8_t cruise[] =                {0x62, 0xc8, 0x12, 0x40, 0x14}; //Cruise Off = 0x40, On = 0x10
 uint8_t lights[] =                {0x62, 0x7F, 0x04}; //Lights 0x10 = Low Beam, 0x08 = High Beam, 0x01 = Front Fog
 uint8_t outTemp[] =               {0x62, 0xCD, 0x28}; //0x08 = -40, 0x59 = 40
 uint8_t engTemp[]  =              {0x62, 0x2C, 0xA5}; //0x5A - 0xFF
@@ -156,7 +156,7 @@ class SHCustomProtocol {
         bean.sendMsg(lights, sizeof(lights));   
         lightsP = lights[2];
       }
-
+      cruise[4] = sCruiseSpeed; 
       sEngTemp = map(sEngTemp, 40, 140, 0x5a, 0xfe);
       engTemp[2] = sEngTemp;
       sFuel = map(sFuel, 0, 100, 82, 0);
