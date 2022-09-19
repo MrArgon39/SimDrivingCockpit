@@ -1,8 +1,8 @@
 {
-    "configuration": "cpu=atmega2560",
-    "board": "arduino:avr:mega",
-    "port": "COM10",
-    "sketch": "Code\\IS250_Speed_Test\\IS250_Speed_Test.ino",
+    "configuration": "flash=2097152_0,freq=133,opt=Small,rtti=Disabled,stackprotect=Disabled,exceptions=Disabled,dbgport=Disabled,dbglvl=None,usbstack=tinyusb,ipstack=ipv4only",
+    "board": "rp2040:rp2040:rpipico",
+    "port": "COM16",
+    "sketch": "Code\\Steering_Wheel\\Steering_Wheel.ino",
     "output": "../ArduinoOutput",
     "programmer": "arduino:avrispmkii"
 }
