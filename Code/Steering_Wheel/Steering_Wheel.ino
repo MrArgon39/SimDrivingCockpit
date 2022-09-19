@@ -16,6 +16,7 @@ byte cMinus = 13;
 byte cPlus = 14;
 byte cRes = 15;
 byte cCan = 16; // Only used as cancel in BeamNG
+int pressedButtons = 0;
 
 enum
 {
@@ -75,7 +76,7 @@ void loop()
 {
   // put your main code here, to run repeatedly:
   delay(10);
-
+  pressedButtons = 0;
   bool mVolDOWN_pressed = (digitalRead(mVolDOWN) == false);
   bool mVolUP_pressed = (digitalRead(mVolUP) == false);
   bool mSkipFWD_pressed = (digitalRead(mSkipFWD) == false);
@@ -151,103 +152,116 @@ void loop()
     {
       // Send D-Pad up
       gp.hat = 1;
-      usb_hid.sendReport(RID_GAMEPAD, &gp, sizeof(gp));
+      //usb_hid.sendReport(RID_GAMEPAD, &gp, sizeof(gp));
       Serial.println("D-Pad Up Pressed");
-      delay(300);
-      gp.hat = 0;
-      usb_hid.sendReport(RID_GAMEPAD, &gp, sizeof(gp));
+      //delay(300);
+      //gp.hat = 0;
+      //usb_hid.sendReport(RID_GAMEPAD, &gp, sizeof(gp));
     }
     else if (dDOWN_pressed)
     {
       // Send D-Pad down
       gp.hat = 5;
-      usb_hid.sendReport(RID_GAMEPAD, &gp, sizeof(gp));
+      //usb_hid.sendReport(RID_GAMEPAD, &gp, sizeof(gp));
       Serial.println("D-Pad Down Pressed");
-      delay(300);
-      gp.hat = 0;
-      usb_hid.sendReport(RID_GAMEPAD, &gp, sizeof(gp));
+      //delay(300);
+      //gp.hat = 0;
+      //usb_hid.sendReport(RID_GAMEPAD, &gp, sizeof(gp));
     }
     else if (dLEFT_pressed)
     {
       // Send D-Pad Left
       gp.hat = 7;
-      usb_hid.sendReport(RID_GAMEPAD, &gp, sizeof(gp));
+      //usb_hid.sendReport(RID_GAMEPAD, &gp, sizeof(gp));
       Serial.println("D-Pad Left Pressed");
-      delay(300);
-      gp.hat = 0;
-      usb_hid.sendReport(RID_GAMEPAD, &gp, sizeof(gp));
+      //delay(300);
+      //gp.hat = 0;
+      //usb_hid.sendReport(RID_GAMEPAD, &gp, sizeof(gp));
     }
     else if (dRIGHT_pressed)
     {
       // Send D-Pad Right
       gp.hat = 3;
-      usb_hid.sendReport(RID_GAMEPAD, &gp, sizeof(gp));
+      //usb_hid.sendReport(RID_GAMEPAD, &gp, sizeof(gp));
       Serial.println("D-Pad Right Pressed");
-      delay(300);
+      //delay(300);
+      //gp.hat = 0;
+      //usb_hid.sendReport(RID_GAMEPAD, &gp, sizeof(gp));
+    }
+    else{
       gp.hat = 0;
-      usb_hid.sendReport(RID_GAMEPAD, &gp, sizeof(gp));
+      //usb_hid.sendReport(RID_GAMEPAD, &gp, sizeof(gp));
+      //delay(100);
     }
     if (dOK_pressed)
     {
       // Send Button 1
-      gp.buttons = 1;
-      usb_hid.sendReport(RID_GAMEPAD, &gp, sizeof(gp));
+      //gp.buttons = 1;
+      pressedButtons= pressedButtons + 1;
+      //usb_hid.sendReport(RID_GAMEPAD, &gp, sizeof(gp));
       Serial.println("D-Pad OK Pressed");
-      delay(300);
-      gp.buttons = 0;
-      usb_hid.sendReport(RID_GAMEPAD, &gp, sizeof(gp));
+      //delay(300);
+      //gp.buttons = 0;
+      //usb_hid.sendReport(RID_GAMEPAD, &gp, sizeof(gp));
     }
     if (cSet_pressed)
     {
       // Send Button 2
-      gp.buttons = 2;
-      usb_hid.sendReport(RID_GAMEPAD, &gp, sizeof(gp));
+      //gp.buttons = 2;
+      pressedButtons= pressedButtons + 2;
+      //usb_hid.sendReport(RID_GAMEPAD, &gp, sizeof(gp));
       Serial.println("Cruise Set Pressed");
-      delay(300);
-      gp.buttons = 0;
-      usb_hid.sendReport(RID_GAMEPAD, &gp, sizeof(gp));
+      //delay(300);
+      //gp.buttons = 0;
+      //usb_hid.sendReport(RID_GAMEPAD, &gp, sizeof(gp));
     }
-    if (cMinus_pressed)
+    else if (cMinus_pressed)
     {
       // Send Button 3
-      gp.buttons = 4;
-      usb_hid.sendReport(RID_GAMEPAD, &gp, sizeof(gp));
+      //gp.buttons = 4;
+      pressedButtons= pressedButtons + 4;
+      //usb_hid.sendReport(RID_GAMEPAD, &gp, sizeof(gp));
       Serial.println("Cruise Set Pressed");
-      delay(300);
-      gp.buttons = 0;
-      usb_hid.sendReport(RID_GAMEPAD, &gp, sizeof(gp));
+      //delay(300);
+      //gp.buttons = 0;
+      //usb_hid.sendReport(RID_GAMEPAD, &gp, sizeof(gp));
     }
-    if (cPlus_pressed)
+    else if (cPlus_pressed)
     {
       // Send Button 4
-      gp.buttons = 8;
-      usb_hid.sendReport(RID_GAMEPAD, &gp, sizeof(gp));
+      //gp.buttons = 8;
+      pressedButtons= pressedButtons + 8;
+      //usb_hid.sendReport(RID_GAMEPAD, &gp, sizeof(gp));
       Serial.println("Cruise Set Pressed");
-      delay(300);
-      gp.buttons = 0;
-      usb_hid.sendReport(RID_GAMEPAD, &gp, sizeof(gp));
+      //delay(300);
+      //gp.buttons = 0;
+      //usb_hid.sendReport(RID_GAMEPAD, &gp, sizeof(gp));
     }
-    if (cRes_pressed)
+    else if (cRes_pressed)
     {
       // Send Button 5
-      gp.buttons = 16;
-      usb_hid.sendReport(RID_GAMEPAD, &gp, sizeof(gp));
+      //gp.buttons = 16;
+      pressedButtons= pressedButtons + 16;
+      //usb_hid.sendReport(RID_GAMEPAD, &gp, sizeof(gp));
       Serial.println("Cruise Set Pressed");
-      delay(300);
-      gp.buttons = 0;
-      usb_hid.sendReport(RID_GAMEPAD, &gp, sizeof(gp));
+      //delay(300);
+      //gp.buttons = 0;
+      //usb_hid.sendReport(RID_GAMEPAD, &gp, sizeof(gp));
     }
-    if (cCan_pressed)
+    else if (cCan_pressed)
     {
       // Send Button 6
-      gp.buttons = 32;
-      usb_hid.sendReport(RID_GAMEPAD, &gp, sizeof(gp));
+      //gp.buttons = 32;
+      pressedButtons = pressedButtons + 32;
+      //usb_hid.sendReport(RID_GAMEPAD, &gp, sizeof(gp));
       Serial.println("Cruise Set Pressed");
-      delay(300);
-      gp.buttons = 0;
-      usb_hid.sendReport(RID_GAMEPAD, &gp, sizeof(gp));
+      //delay(300);
+      //gp.buttons = 0;
+      //usb_hid.sendReport(RID_GAMEPAD, &gp, sizeof(gp));
     }
+    gp.buttons = pressedButtons;
+    usb_hid.sendReport(RID_GAMEPAD, &gp, sizeof(gp));
     digitalWrite(LED_BUILTIN, !digitalRead(LED_BUILTIN));
-    delay(100);
+    //delay(100);
   }
 }
