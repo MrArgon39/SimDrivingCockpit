@@ -78,6 +78,8 @@ class SHCustomProtocol {
       //Timer1.initialize(t);
       bean.ackMsg((const uint8_t[]) {0xFE}, 1);
       bean.begin(46, 47);
+      pinMode(38, OUTPUT);
+      pinMode(39, OUTPUT);
       pot.begin(4);
     }
 
@@ -111,7 +113,9 @@ class SHCustomProtocol {
       sEngTemp = FlowSerialReadStringUntil(';').toInt();
       sOutTemp = FlowSerialReadStringUntil(';').toInt();
       sHandbrake = FlowSerialReadStringUntil(';').toInt();
-      sFuel = FlowSerialReadStringUntil('\n').toInt();
+      sFuel = FlowSerialReadStringUntil(';').toInt();
+      int sLeftTurn = FlowSerialReadStringUntil(';').toInt();
+      int sRightTurn = FlowSerialReadStringUntil('\n').toInt();
       lights[2] = 0x04;
       if (sGear == 0){
         gear[2] = 0x20;
@@ -155,6 +159,18 @@ class SHCustomProtocol {
       {
         bean.sendMsg(lights, sizeof(lights));   
         lightsP = lights[2];
+      }
+      if(sLeftTurn == 1){
+        digitalWrite(38, HIGH);
+      }
+      else{
+        digitalWrite(38,LOW);
+      }
+      if(sRightTurn == 1){
+        digitalWrite(39, HIGH);
+      }
+      else{
+        digitalWrite(39,LOW);
       }
       cruise[4] = sCruiseSpeed; 
       sEngTemp = map(sEngTemp, 40, 140, 0x5a, 0xfe);
