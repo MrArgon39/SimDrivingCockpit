@@ -1,6 +1,6 @@
 #include "Adafruit_TinyUSB.h"
 
-// d = D-Pad, m = Media, c = Cruise, o = Other assorted buttons
+// d = D-Pad, m = Media, c = Cruise, s = shift; o = Other assorted buttons
 byte dUP = 2;
 byte dDOWN = 3;
 byte dLEFT = 4;
@@ -16,6 +16,9 @@ byte cMinus = 13;
 byte cPlus = 14;
 byte cRes = 15;
 byte cCan = 16; // Only used as cancel in BeamNG
+byte sUp = 17;
+byte sDown = 18;
+byte oPreset = 19;
 int pressedButtons = 0;
 
 enum
@@ -51,6 +54,10 @@ void setup()
   pinMode(cPlus, INPUT_PULLUP);
   pinMode(cRes, INPUT_PULLUP);
   pinMode(cCan, INPUT_PULLUP);
+  pinMode(sUp, INPUT_PULLUP);
+  pinMode(sDown, INPUT_PULLUP);
+  pinMode(oPreset, INPUT_PULLUP);
+
   pinMode(LED_BUILTIN, OUTPUT);
 
   usb_hid.setStringDescriptor("PicoWheel");
@@ -92,6 +99,9 @@ void loop()
   bool cPlus_pressed = (digitalRead(cPlus) == false);
   bool cRes_pressed = (digitalRead(cRes) == false);
   bool cCan_pressed = (digitalRead(cCan) == false);
+  bool sUp_pressed = (digitalRead(sUp) == false);
+  bool sDown_pressed = (digitalRead(sDown) == false);
+  bool oPreset_pressed = (digitalRead(oPreset) == false);
 
   gp.x = 0;
   gp.y = 0;
@@ -108,11 +118,11 @@ void loop()
     // Consumer report is 2-byte containing the control code of the key
     // For list of control check out https://github.com/hathach/tinyusb/blob/master/src/class/hid/hid.h
 
-    if (mVolDOWN_pressed)
+    if (mVolDOWN_pressed)//Media controls on back of wheel/Extra buttons if a switch is pressed on boot
     {
       // send volume down (0x00EA)
       usb_hid.sendReport16(RID_CONSUMER_CONTROL, HID_USAGE_CONSUMER_VOLUME_DECREMENT);
-      Serial.println("Volume Down Pressed");
+      //Serial.println("Volume Down Pressed");
       delay(100);
       usb_hid.sendReport16(RID_CONSUMER_CONTROL, 0);
     }
@@ -120,7 +130,7 @@ void loop()
     {
       // send volume down (0x00E9)
       usb_hid.sendReport16(RID_CONSUMER_CONTROL, HID_USAGE_CONSUMER_VOLUME_INCREMENT);
-      Serial.println("Volume Up Pressed");
+      //Serial.println("Volume Up Pressed");
       delay(100);
       usb_hid.sendReport16(RID_CONSUMER_CONTROL, 0);
     }
@@ -128,7 +138,7 @@ void loop()
     {
       // send volume down (0x00B5)
       usb_hid.sendReport16(RID_CONSUMER_CONTROL, HID_USAGE_CONSUMER_SCAN_NEXT);
-      Serial.println("Skip Forward Pressed");
+      //Serial.println("Skip Forward Pressed");
       delay(100);
       usb_hid.sendReport16(RID_CONSUMER_CONTROL, 0);
     }
@@ -136,7 +146,7 @@ void loop()
     {
       // send volume down (0x00B6)
       usb_hid.sendReport16(RID_CONSUMER_CONTROL, HID_USAGE_CONSUMER_SCAN_PREVIOUS);
-      Serial.println("Skip back Pressed");
+      //Serial.println("Skip back Pressed");
       delay(100);
       usb_hid.sendReport16(RID_CONSUMER_CONTROL, 0);
     }
@@ -144,11 +154,11 @@ void loop()
     {
       // send volume down (0x00CD)
       usb_hid.sendReport16(RID_CONSUMER_CONTROL, HID_USAGE_CONSUMER_PLAY_PAUSE);
-      Serial.println("Play Pause Pressed");
+      //Serial.println("Play Pause Pressed");
       delay(300);
       usb_hid.sendReport16(RID_CONSUMER_CONTROL, 0);
     }
-    if (dUP_pressed)
+    if (dUP_pressed)//Left Side Controls
     {
       // Send D-Pad up
       gp.hat = 1;
@@ -199,18 +209,18 @@ void loop()
       //gp.buttons = 1;
       pressedButtons= pressedButtons + 1;
       //usb_hid.sendReport(RID_GAMEPAD, &gp, sizeof(gp));
-      Serial.println("D-Pad OK Pressed");
+      //Serial.println("D-Pad OK Pressed");
       //delay(300);
       //gp.buttons = 0;
       //usb_hid.sendReport(RID_GAMEPAD, &gp, sizeof(gp));
     }
-    if (cSet_pressed)
+    if (cSet_pressed)//Right Side Pad
     {
       // Send Button 2
       //gp.buttons = 2;
       pressedButtons= pressedButtons + 2;
       //usb_hid.sendReport(RID_GAMEPAD, &gp, sizeof(gp));
-      Serial.println("Cruise Set Pressed");
+      //Serial.println("Cruise Set Pressed");
       //delay(300);
       //gp.buttons = 0;
       //usb_hid.sendReport(RID_GAMEPAD, &gp, sizeof(gp));
@@ -221,7 +231,7 @@ void loop()
       //gp.buttons = 4;
       pressedButtons= pressedButtons + 4;
       //usb_hid.sendReport(RID_GAMEPAD, &gp, sizeof(gp));
-      Serial.println("Cruise Set Pressed");
+      //Serial.println("Cruise Set Pressed");
       //delay(300);
       //gp.buttons = 0;
       //usb_hid.sendReport(RID_GAMEPAD, &gp, sizeof(gp));
@@ -232,7 +242,7 @@ void loop()
       //gp.buttons = 8;
       pressedButtons= pressedButtons + 8;
       //usb_hid.sendReport(RID_GAMEPAD, &gp, sizeof(gp));
-      Serial.println("Cruise Set Pressed");
+      //Serial.println("Cruise Set Pressed");
       //delay(300);
       //gp.buttons = 0;
       //usb_hid.sendReport(RID_GAMEPAD, &gp, sizeof(gp));
@@ -243,7 +253,7 @@ void loop()
       //gp.buttons = 16;
       pressedButtons= pressedButtons + 16;
       //usb_hid.sendReport(RID_GAMEPAD, &gp, sizeof(gp));
-      Serial.println("Cruise Set Pressed");
+      //Serial.println("Cruise Set Pressed");
       //delay(300);
       //gp.buttons = 0;
       //usb_hid.sendReport(RID_GAMEPAD, &gp, sizeof(gp));
@@ -254,10 +264,28 @@ void loop()
       //gp.buttons = 32;
       pressedButtons = pressedButtons + 32;
       //usb_hid.sendReport(RID_GAMEPAD, &gp, sizeof(gp));
-      Serial.println("Cruise Set Pressed");
+      //Serial.println("Cruise Set Pressed");
       //delay(300);
       //gp.buttons = 0;
       //usb_hid.sendReport(RID_GAMEPAD, &gp, sizeof(gp));
+    }
+    if (sUp_pressed)
+    {
+      // Send Button 7
+      pressedButtons = pressedButtons + 64;
+      Serial.println("Shift Up Pressed");
+    }
+    if (sDown_pressed)
+    {
+      // Send Button 8
+      pressedButtons = pressedButtons + 128;
+      Serial.println("Shift Down Pressed");
+    }
+    if (oPreset_pressed)
+    {
+      // Send Button 9?
+      //pressedButtons = pressedButtons + 256;
+      Serial.println("Preset Pressed");
     }
     gp.buttons = pressedButtons;
     usb_hid.sendReport(RID_GAMEPAD, &gp, sizeof(gp));
