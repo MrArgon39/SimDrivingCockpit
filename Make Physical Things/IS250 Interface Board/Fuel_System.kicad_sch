@@ -241,7 +241,7 @@
     (uuid 2642344e-f978-4c06-81ca-ce62bc236e3f)
     (property "Reference" "U1" (id 0) (at 152.4 82.55 0))
     (property "Value" "AD8400ARZ1" (id 1) (at 152.4 85.09 0))
-    (property "Footprint" "SOIC127P600X175-8N" (id 2) (at 152.4 98.044 0)
+    (property "Footprint" "Package_SO:SOIC-8-1EP_3.9x4.9mm_P1.27mm_EP2.29x3mm" (id 2) (at 152.4 98.044 0)
       (effects (font (size 1.27 1.27)) (justify left bottom) hide)
     )
     (property "Datasheet" "" (id 3) (at 152.4 98.044 0)
