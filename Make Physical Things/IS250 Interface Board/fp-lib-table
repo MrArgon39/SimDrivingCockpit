@@ -1,3 +1,4 @@
 (fp_lib_table
   (lib (name "IS250 Interface Board")(type "KiCad")(uri "${KIPRJMOD}/Libs")(options "")(descr ""))
+  (lib (name "Arduino")(type "KiCad")(uri "${KIPRJMOD}/Libs/arduino-kicad-library-1.4.1/Arduino.pretty")(options "")(descr ""))
 )

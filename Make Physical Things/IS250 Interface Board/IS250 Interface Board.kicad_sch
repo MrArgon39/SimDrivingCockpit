@@ -1527,7 +1527,7 @@
     (property "Value" "Arduino_Mega2560_Shield" (id 1) (at 53.34 165.1 0)
       (effects (font (size 1.524 1.524)))
     )
-    (property "Footprint" "" (id 2) (at 71.12 29.972 0)
+    (property "Footprint" "Arduino:Arduino_Mega2560_Shield" (id 2) (at 71.12 29.972 0)
       (effects (font (size 1.524 1.524)) hide)
     )
     (property "Datasheet" "https://store.arduino.cc/arduino-mega-2560-rev3" (id 3) (at 71.12 29.972 0)
@@ -2200,7 +2200,7 @@
       (reference "R18") (unit 1) (value "22k") (footprint "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal")
     )
     (path "/befd90f1-e350-4c6b-9126-156e7cfd54fd/f532fa97-167c-4bca-bcaf-4a540362fc1c"
-      (reference "RV1") (unit 1) (value "R_Potentiometer") (footprint "")
+      (reference "RV1") (unit 1) (value "R_Potentiometer") (footprint "Potentiometer_THT:Potentiometer_Bourns_3386P_Vertical")
     )
     (path "/67c25448-ea3e-4950-a82a-fe1f009b9ce6"
       (reference "SW1") (unit 1) (value "SW_SPST") (footprint "IS250 Interface Board:JaycarSlideSwitch")
@@ -2221,10 +2221,10 @@
       (reference "U1") (unit 1) (value "AD8400ARZ1") (footprint "Package_SO:SOIC-8-1EP_3.9x4.9mm_P1.27mm_EP2.29x3mm")
     )
     (path "/c10fe882-d0c6-4d01-8105-c15a551b4c6b/ee4a6612-4d72-41b2-94a6-c292d4d5cb83"
-      (reference "U2") (unit 1) (value "4017") (footprint "")
+      (reference "U2") (unit 1) (value "4017") (footprint "Package_DIP:DIP-16_W7.62mm")
     )
     (path "/49f3a792-f9d7-417d-ae9d-443f600ad87b"
-      (reference "XA1") (unit 1) (value "Arduino_Mega2560_Shield") (footprint "")
+      (reference "XA1") (unit 1) (value "Arduino_Mega2560_Shield") (footprint "Arduino:Arduino_Mega2560_Shield")
     )
   )
 )

@@ -104,7 +104,7 @@
     (property "Value" "R_Potentiometer" (id 1) (at 96.52 110.2359 0)
       (effects (font (size 1.27 1.27)) (justify right))
     )
-    (property "Footprint" "" (id 2) (at 93.726 108.966 0)
+    (property "Footprint" "Potentiometer_THT:Potentiometer_Bourns_3386P_Vertical" (id 2) (at 93.726 108.966 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Datasheet" "~" (id 3) (at 93.726 108.966 0)

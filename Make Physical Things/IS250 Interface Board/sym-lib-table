@@ -1,3 +1,4 @@
 (sym_lib_table
   (lib (name "IS250 Interface Board")(type "KiCad")(uri "${KIPRJMOD}/IS250 Interface Board.kicad_sym")(options "")(descr ""))
+  (lib (name "arduino")(type "KiCad")(uri "${KIPRJMOD}/Libs/arduino-kicad-library-1.4.1/arduino.kicad_sym")(options "")(descr ""))
 )

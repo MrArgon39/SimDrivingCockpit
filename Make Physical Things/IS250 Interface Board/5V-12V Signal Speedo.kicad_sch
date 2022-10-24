@@ -493,7 +493,7 @@
     (uuid ee4a6612-4d72-41b2-94a6-c292d4d5cb83)
     (property "Reference" "U2" (id 0) (at 90.17 44.2212 90))
     (property "Value" "4017" (id 1) (at 90.17 46.7612 90))
-    (property "Footprint" "" (id 2) (at 71.12 50.8 0)
+    (property "Footprint" "Package_DIP:DIP-16_W7.62mm" (id 2) (at 71.12 50.8 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Datasheet" "http://www.intersil.com/content/dam/Intersil/documents/cd40/cd4017bms-22bms.pdf" (id 3) (at 71.12 50.8 0)
