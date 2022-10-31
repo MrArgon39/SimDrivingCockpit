@@ -5946,6 +5946,18 @@
     ) (layer "F.SilkS") (width 0.132291) (fill solid) (tstamp ed510863-d73e-40fd-a41b-67705c437ae5))
   (gr_poly
     (pts
+      (xy 165.7858 63.5762)
+      (xy 168.3004 65.9892)
+      (xy 168.3512 100.2792)
+      (xy 165.735 102.8446)
+      (xy 165.735 114.0714)
+      (xy 164.1856 115.6208)
+      (xy 66.675 115.57)
+      (xy 66.7004 62.2808)
+      (xy 165.7858 62.2554)
+    ) (layer "F.SilkS") (width 0.15) (fill none) (tstamp ed9fa7f1-c410-42e5-9bc1-ad6bd344391f))
+  (gr_poly
+    (pts
       (xy 199.50582 143.25977)
       (xy 199.50582 145.1059)
       (xy 199.054839 144.654918)
@@ -6094,7 +6106,7 @@
   (gr_text "+12v" (at 194.056 58.674) (layer "F.SilkS") (tstamp 5a5e5784-52a6-4ede-abad-2b5c96b20514)
     (effects (font (size 1 1) (thickness 0.15)))
   )
-  (gr_text "CREATED BY MRARGON39\nDON'T COPY THIS SHIT" (at 97.19 79.05) (layer "F.SilkS") (tstamp 63dda8d6-6690-40fe-a303-f141a60eab39)
+  (gr_text "CREATED BY MRARGON39\nDON'T COPY THIS" (at 97.19 79.05) (layer "F.SilkS") (tstamp 63dda8d6-6690-40fe-a303-f141a60eab39)
     (effects (font (size 2 2) (thickness 0.15)))
   )
   (gr_text "FUEL-GND" (at 218.44 45.72 90) (layer "F.SilkS") (tstamp 6c923bf0-0396-4c24-99c5-bc80c32be371)
