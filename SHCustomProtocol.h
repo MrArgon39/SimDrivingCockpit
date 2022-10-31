@@ -1,4 +1,4 @@
- #ifndef __SHCUSTOMPROTOCOL_H__
+#ifndef __SHCUSTOMPROTOCOL_H__
 #define __SHCUSTOMPROTOCOL_H__
 
 #include <Arduino.h>
@@ -23,12 +23,13 @@ uint8_t cruise[] =                {0x62, 0xc8, 0x12, 0x40, 0x14}; //Cruise Off =
 uint8_t lights[] =                {0x62, 0x7F, 0x04}; //Lights 0x10 = Low Beam, 0x08 = High Beam, 0x01 = Front Fog
 uint8_t outTemp[] =               {0x62, 0xCD, 0x28}; //0x08 = -40, 0x59 = 40
 uint8_t engTemp[]  =              {0x62, 0x2C, 0xA5}; //0x5A - 0xFF
-uint8_t sportMode[] =             {0x62, 0x9D, 0x80, 0x40, 0x08}; //D2 0x40=6,0x20=5,0x10=4,0x08=3,0x04=2,0x02=1 | D3 0x08 = 1, 0x10 = 2, 0x20 = 3, 0x30 = 4, 0x40 = 5, 0x50 = 6
+uint8_t sportMode[] =             {0x62, 0x9D, 0x20, 0x80, 0x80}; //D2 0x40=6,0x20=5,0x10=4,0x08=3,0x04=2,0x02=1 | D3 0x08 = 1, 0x10 = 2, 0x20 = 3, 0x30 = 4, 0x40 = 5, 0x50 = 6
 
 int cruiseP = 0x40;
 int lightsP = 0x04;
 
 int sGear;
+int sMaxGear;
 int sCruise;
 //int sLights;
 int sEngTemp;
@@ -115,16 +116,56 @@ class SHCustomProtocol {
       sHandbrake = FlowSerialReadStringUntil(';').toInt();
       sFuel = FlowSerialReadStringUntil(';').toInt();
       int sLeftTurn = FlowSerialReadStringUntil(';').toInt();
-      int sRightTurn = FlowSerialReadStringUntil('\n').toInt();
+      int sRightTurn = FlowSerialReadStringUntil(';').toInt();
+      sMaxGear = FlowSerialReadStringUntil('\n').toInt();
+
       lights[2] = 0x04;
       if (sGear == 0){
         gear[2] = 0x20;
+        sportMode[2] = 0x20;
+        sportMode[3] = 0x80;
+        sportMode[4] = 0x80;
       }
       else if (sGear == -1){
         gear[2] = 0x40;
+        sportMode[2] = 0x20;
+        sportMode[3] = 0x80;
+        sportMode[4] = 0x80;
       }
-      else if (sGear >= 1){
+      else if (sGear >= 1 && sMaxGear >= 7 || sMaxGear == 0){
         gear[2] = 0x10;
+        sportMode[2] = 0x20;
+        sportMode[3] = 0x80;
+        sportMode[4] = 0x80;
+      }
+      else{
+        sportMode[2] = 0x80;
+        switch (sGear){
+          case 1:
+          sportMode[3] = 0x02;
+          sportMode[4] = 0x08;
+          break;
+          case 2:
+          sportMode[3] = 0x04;
+          sportMode[4] = 0x10;
+          break;
+          case 3:
+          sportMode[3] = 0x08;
+          sportMode[4] = 0x20;
+          break;
+          case 4:
+          sportMode[3] = 0x10;
+          sportMode[4] = 0x30;
+          break;
+          case 5:
+          sportMode[3] = 0x20;
+          sportMode[4] = 0x40;
+          break;
+          case 6:
+          sportMode[3] = 0x40;
+          sportMode[4] = 0x50;
+          break;
+        }
       }
       if (sCruise == 1){
         cruise[3] = 0x10;
@@ -198,7 +239,7 @@ class SHCustomProtocol {
       current_millis = millis();
 
   
-      if (current_millis - timer > 48) {
+      if (current_millis - timer > 45) {
         if (!bean.isBusy()) {
           switch (sendIndex){
            case 1:
@@ -228,8 +269,12 @@ class SHCustomProtocol {
             break;
             case 7:
             bean.sendMsg(outTemp, sizeof(outTemp));
-            sendIndex = 1;
+            sendIndex++;
             //FlowSerialDebugPrintLn(millis());
+            break;
+            case 8:
+            bean.sendMsg(sportMode, sizeof(sportMode));
+            sendIndex = 1;
             break;
           }
       timer = current_millis;
