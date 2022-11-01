@@ -32,6 +32,9 @@ void setup()
   pinMode(20, INPUT_PULLUP);
   // Splitter Switch
   pinMode(21, INPUT_PULLUP);
+  //Power supply toggle pin
+  pinMode(23, INPUT_PULLUP);
+  digitalWrite(23, HIGH);
 
   usb_hid.setStringDescriptor("PicoShift");
   USBDevice.setID(0x2e8a, 0x000b); // Sets the Product ID to be different to the default, so that windows respects the name given, and not the name of the first device plugged in.

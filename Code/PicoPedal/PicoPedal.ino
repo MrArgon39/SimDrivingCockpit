@@ -29,6 +29,9 @@ void setup() {
   pinMode(A1, INPUT);
   // Accelerator Potentiometer on pin 27
   pinMode(A2, INPUT);
+  //Power supply toggle pin
+  pinMode(23, INPUT_PULLUP);
+  digitalWrite(23, HIGH);
 
 
   usb_hid.setStringDescriptor("PicoPedal");
