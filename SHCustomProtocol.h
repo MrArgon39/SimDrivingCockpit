@@ -40,7 +40,8 @@ int sendIndex = 1;
 
 AD8400 pot = AD8400(53, 255, 255,51,52 );
 
-//Custom Protocol Format within SimHub - 
+//Custom Protocol Format within SimHub - if ([Gear]='N','0',if([Gear]='R','-1',[Gear])) + ';' + if(isnull([GameRawData.TruckValues.CurrentValues.DashboardValues.CruiseControl],0),'1','0') + ';' + isnull([GameRawData.TruckValues.CurrentValues.DashboardValues.CruiseControlSpeed.Kph],0) + ';' +if(isnull([GameRawData.TruckValues.CurrentValues.LightsValues.BeamLow],0),'1','0') + ';' + if(isnull([GameRawData.TruckValues.CurrentValues.LightsValues.BeamHigh],0),'1','0') + ';' + if(isnull([GameRawData.TruckValues.CurrentValues.LightsValues.AuxRoof] or [GameRawData.TruckValues.CurrentValues.LightsValues.AuxFront],0),'1','0') + ';' + [WaterTemperature] + ';' + [AirTemperature] + ';' + if(isnull([GameRawData.TruckValues.CurrentValues.MotorValues.BrakeValues.ParkingBrake],0),'1','0') + ';' + isnull(truncate([FuelPercent]),50) + ';' + [TurnIndicatorLeft] + ';' + [TurnIndicatorRight] + ';' + [CarSettings_MaxGears]
+//Paste into the custom protocol section within the Arduino component of SimHub
 
 class SHCustomProtocol {
   private:
@@ -120,26 +121,27 @@ class SHCustomProtocol {
       sMaxGear = FlowSerialReadStringUntil('\n').toInt();
 
       lights[2] = 0x04;
-      if (sGear == 0){
+      if (sGear == 0){//Neutral, cancel sport mode and restrictions
         gear[2] = 0x20;
         sportMode[2] = 0x20;
         sportMode[3] = 0x80;
         sportMode[4] = 0x80;
       }
-      else if (sGear == -1){
+      else if (sGear == -1 || sGear == -2 || sGear == -3 || sGear == -4){//Reverse, multiple due to truck sims
         gear[2] = 0x40;
         sportMode[2] = 0x20;
         sportMode[3] = 0x80;
         sportMode[4] = 0x80;
       }
-      else if (sGear >= 1 && sMaxGear >= 7 || sMaxGear == 0){
+      else if (sGear >= 1 && sMaxGear >= 7 || sMaxGear == 0){//Drive, if more than 6 gears use instead of sport mode.
         gear[2] = 0x10;
         sportMode[2] = 0x20;
         sportMode[3] = 0x80;
         sportMode[4] = 0x80;
       }
-      else{
+      else{//Sport mode, further defined with the separate gears.
         sportMode[2] = 0x80;
+        gear[2] = 0x08;
         switch (sGear){
           case 1:
           sportMode[3] = 0x02;
@@ -167,24 +169,24 @@ class SHCustomProtocol {
           break;
         }
       }
-      if (sCruise == 1){
+      if (sCruise == 1){//Cruise indicator
         cruise[3] = 0x10;
       }
       else{
         cruise[3] = 0x40;
       }
-      if (sLowBeam == 1){
+      if (sLowBeam == 1){//Llow Beam
         lights[2] = lights[2] + 0x10;
       }
-      if (sHighBeam == 1){
+      if (sHighBeam == 1){//High Beam
         lights[2] = lights[2] + 0x08;
       }
-      if (sFog == 1){
+      if (sFog == 1){//Auxiliary lights
         lights[2] = lights[2] + 0x01;
       }
       //Eng temp interpret here.
-      outTemp[2] = sOutTemp + 48;
-      if (sHandbrake == 1){
+      outTemp[2] = sOutTemp + 48;//Outdoor temperature
+      if (sHandbrake == 1){//Handbrake
         stabilityControl[3] = 0x20;
       }
       else{
@@ -196,27 +198,27 @@ class SHCustomProtocol {
         bean.sendMsg(cruise, sizeof(cruise));   
         cruiseP = cruise[3];
       }*/
-      if (lightsP != lights[2])
+      if (lightsP != lights[2])//Light maintainer
       {
         bean.sendMsg(lights, sizeof(lights));   
         lightsP = lights[2];
       }
-      if(sLeftTurn == 1){
+      if(sLeftTurn == 1){//Left Turn
         digitalWrite(38, HIGH);
       }
       else{
         digitalWrite(38,LOW);
       }
-      if(sRightTurn == 1){
+      if(sRightTurn == 1){//Right Turn
         digitalWrite(39, HIGH);
       }
       else{
         digitalWrite(39,LOW);
       }
-      cruise[4] = sCruiseSpeed; 
-      sEngTemp = map(sEngTemp, 40, 140, 0x5a, 0xfe);
+      cruise[4] = sCruiseSpeed; //Cruise speed
+      sEngTemp = map(sEngTemp, 40, 140, 0x5a, 0xfe); //Engine temp mapping
       engTemp[2] = sEngTemp;
-      sFuel = map(sFuel, 0, 100, 82, 0);
+      sFuel = map(sFuel, 0, 100, 82, 0); //Fuel mapping for the AD8400
      
       /*
         // -------------------------------------------------------
@@ -239,7 +241,7 @@ class SHCustomProtocol {
       current_millis = millis();
 
   
-      if (current_millis - timer > 45) {
+      if (current_millis - timer > 45) {//Iterates through the different mpx messages so that they all get sent, without collisions or overloading the bus
         if (!bean.isBusy()) {
           switch (sendIndex){
            case 1:

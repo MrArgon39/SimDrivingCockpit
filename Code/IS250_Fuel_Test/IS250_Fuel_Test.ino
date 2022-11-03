@@ -5,6 +5,7 @@
 //    DATE: 2021-10-16
 //     URL: https://github.com/RobTillaart/AD520X
 
+// Modified for the setup I use, credit for original code goes to Rob
 
 #include "AD520X.h"
 

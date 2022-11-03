@@ -1,5 +1,9 @@
 #include "Adafruit_TinyUSB.h"
 
+//Code for the pedalset, currently using the onboard ADC of the Pico, with further development may be moved to an external component.
+//Currently uses potentiometers, option to use SS49E linear hall effect sensors with more development.
+//Will aslo be pdated to use the ADS1115, same as the shifter for more reliability.
+
 enum
 {
   RID_GAMEPAD = 3,
@@ -49,22 +53,26 @@ void setup() {
 
 void loop() {
   if ( !usb_hid.ready() ) return;
+  //Read in the axes.
   Clutch = analogRead(26);
   Brake = analogRead(27);
   Accel = analogRead(28);
 
+  //Map the axes to the joystick input range.
   Clutch = map(Clutch,0,1023,-127,128);
   Brake = map(Brake,0,1023,-127,128);
   Accel = map(Accel,0,1023,-127,128);
 
   Serial.println(Brake);
-
+  //Set the gamepad axes to the mapped values.
   gp.rx = Clutch;
   gp.ry = Brake;
   gp.rz = Accel;
 
+
+  //Send to report to the host computer.
   usb_hid.sendReport(RID_GAMEPAD, &gp, sizeof(gp));
 
   digitalWrite(LED_BUILTIN, !digitalRead(LED_BUILTIN));
-  delay(100);
+  delay(100); //Polling rate will be higher in a finalised design.
 }

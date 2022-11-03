@@ -1,10 +1,15 @@
 #include "Adafruit_TinyUSB.h"
 
+//Gearshift, will contain a two axis gimbal with either hall effect sensors or potentiometers to detects where the stick is, and
+//two switches for when you are driving a truck.
+
+//Will be modified to use an ADS1115 I2C ADC, as the internal ADC of the Pico is not the best.
 enum
 {
   RID_GAMEPAD = 2,
 };
 
+//Generic Gamepad descriptor, may be modified with further development.
 uint8_t const desc_hid_report[] =
     {
         TUD_HID_REPORT_DESC_GAMEPAD(HID_REPORT_ID(RID_GAMEPAD))};
@@ -53,7 +58,7 @@ void loop()
   // put your main code here, to run repeatedly:
   if (!usb_hid.ready())
     return;
-
+  // Read X pin
   X = analogRead(26);
 
   // Repeat with Y pin
@@ -110,7 +115,7 @@ void loop()
       Serial.println("N");
     }
   }
-  if (analogRead(A2) > 80 && analogRead(A2) < 120)
+  if (analogRead(A2) > 80 && analogRead(A2) < 120)//For another faceplate, but needs the ADS working before it can be implemented properly.
   {
   }
   if (digitalRead(20) == LOW)

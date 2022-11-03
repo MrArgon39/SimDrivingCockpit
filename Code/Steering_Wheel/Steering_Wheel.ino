@@ -1,5 +1,9 @@
 #include "Adafruit_TinyUSB.h"
 
+//This is for the physical steering wheel, to handle buttons that can be interacted with. Will be changed to a matrix for efficiency of
+//inputs, and to allow for even more buttons.
+
+//Button names are respective to their usual use, and what they are marked as on the refernece photo.
 // d = D-Pad, m = Media, c = Cruise, s = shift; o = Other assorted buttons
 byte dUP = 2;
 byte dDOWN = 3;
@@ -19,7 +23,7 @@ byte cCan = 16; // Only used as cancel in BeamNG
 byte sUp = 17;
 byte sDown = 18;
 byte oPreset = 19;
-int pressedButtons = 0;
+int pressedButtons = 0; //Stores the values of the buttons that are currently depressed.
 
 enum
 {
@@ -38,7 +42,7 @@ hid_gamepad_report_t gp;
 
 void setup()
 {
-  // put your setup code here, to run once:
+  // Many inputs, many inputs
   pinMode(dUP, INPUT_PULLUP);
   pinMode(dDOWN, INPUT_PULLUP);
   pinMode(dLEFT, INPUT_PULLUP);
@@ -60,7 +64,7 @@ void setup()
 
   pinMode(LED_BUILTIN, OUTPUT);
 
-  usb_hid.setStringDescriptor("PicoWheel");
+  usb_hid.setStringDescriptor("PicoWheel");//Tell windows that the device has a different name
   usb_hid.begin();
   Serial.begin(115200);
 
@@ -76,14 +80,14 @@ void setup()
   gp.ry = 0;
   gp.hat = 0;
   gp.buttons = 0;
-  usb_hid.sendReport(0, &gp, sizeof(gp));
+  usb_hid.sendReport(0, &gp, sizeof(gp)); //Send a blank report to ensure everything is at zero.
 }
 
 void loop()
 {
   // put your main code here, to run repeatedly:
   delay(10);
-  pressedButtons = 0;
+  pressedButtons = 0; //Chack if any button was pressed, then excute the related action.
   bool mVolDOWN_pressed = (digitalRead(mVolDOWN) == false);
   bool mVolUP_pressed = (digitalRead(mVolUP) == false);
   bool mSkipFWD_pressed = (digitalRead(mSkipFWD) == false);

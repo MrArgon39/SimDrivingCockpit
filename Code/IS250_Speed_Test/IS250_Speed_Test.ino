@@ -1,4 +1,7 @@
 #include <TimerOne.h>
+
+//Unused test code, still here to show development of ideas
+
 unsigned long t;
 float f=0;// 10f = 15 speed
 float speed = 20;//1.5 speed = 1 frequency
